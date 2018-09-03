@@ -1,0 +1,152 @@
+//multiplicative inverse
+
+Method 1 (Naive)
+**********************************************************************************************
+A Naive method is to try all numbers from 1 to m. For every number x, check if (a*x)%m is 1. Below is C++ implementation of this method.
+// C++ program to find modular inverse of a under modulo m
+#include<iostream>
+using namespace std;
+ 
+// A naive method to find modulor multiplicative inverse of
+// 'a' under modulo 'm'
+int modInverse(int a, int m)
+{
+    a = a%m;
+    for (int x=1; x<m; x++)
+       if ((a*x) % m == 1)
+          return x;
+}
+ 
+// Driver Program
+int main()
+{
+    int a = 3, m = 11;
+    cout << modInverse(a, m);
+    return 0;
+}
+output=4;
+
+time compexity O(m);
+
+***************************************************************************************************
+Method 2 (Works when m and a are coprime)
+// C++ program to find multiplicative modulo inverse using
+// Extended Euclid algorithm.
+#include<iostream>
+using namespace std;
+ 
+// C function for extended Euclidean Algorithm
+int gcdExtended(int a, int b, int *x, int *y);
+ 
+// Function to find modulo inverse of a
+void modInverse(int a, int m)
+{
+    int x, y;
+    int g = gcdExtended(a, m, &x, &y);
+    if (g != 1)
+        cout << "Inverse doesn't exist";
+    else
+    {
+        // m is added to handle negative x
+        int res = (x%m + m) % m;
+        cout << "Modular multiplicative inverse is " << res;
+    }
+}
+ 
+// C function for extended Euclidean Algorithm
+int gcdExtended(int a, int b, int *x, int *y)
+{
+    // Base Case
+    if (a == 0)
+    {
+        *x = 0, *y = 1;
+        return b;
+    }
+ 
+    int x1, y1; // To store results of recursive call
+    int gcd = gcdExtended(b%a, a, &x1, &y1);
+ 
+    // Update x and y using results of recursive
+    // call
+    *x = y1 - (b/a) * x1;
+    *y = x1;
+ 
+    return gcd;
+}
+ 
+// Driver Program
+int main()
+{
+    int a = 3, m = 11;
+    modInverse(a, m);
+    return 0;
+}
+Output:
+
+Modular multiplicative inverse is 4
+time complexity O(logm);
+***********************************************************************************************************
+
+Method 3 (Works when m is prime)
+If we know m is prime, then we can also use Fermats’s little theorem to find the inverse.
+#include<iostream>
+using namespace std;
+ 
+// To find GCD of a and b
+int gcd(int a, int b);
+ 
+// To compute x raised to power y under modulo m
+int power(int x, unsigned int y, unsigned int m);
+ 
+// Function to find modular inverse of a under modulo m
+// Assumption: m is prime
+void modInverse(int a, int m)
+{
+    int g = gcd(a, m);
+    if (g != 1)
+        cout << "Inverse doesn't exist";
+    else
+    {
+        // If a and m are relatively prime, then modulo inverse
+        // is a^(m-2) mode m
+        cout << "Modular multiplicative inverse is "
+             << power(a, m-2, m);
+    }
+}
+ 
+// To compute x^y under modulo m
+int power(int x, unsigned int y, unsigned int m)
+{
+    if (y == 0)
+        return 1;
+    int p = power(x, y/2, m) % m;
+    p = (p * p) % m;
+ 
+    return (y%2 == 0)? p : (x * p) % m;
+}
+ 
+// Function to return gcd of a and b
+int gcd(int a, int b)
+{
+    if (a == 0)
+        return b;
+    return gcd(b%a, a);
+}
+ 
+// Driver Program
+int main()
+{
+    int a = 3, m = 11;
+    modInverse(a, m);
+    return 0;
+}
+output:
+Modular multiplicative inverse is 4 
+Time Complexity of this method is O(Log m)
+
+
+
+
+
+
+
